@@ -201,6 +201,6 @@ Server.get("/server", (req, resp) => {
   resp.send("server connected success");
 });
 
-Server.listen(8080, () => {
+Server.listen(process.env.PORT || 8080, () => {
   console.log("Started");
 });
