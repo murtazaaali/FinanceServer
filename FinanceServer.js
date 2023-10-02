@@ -15,10 +15,26 @@ let ConnetionFunc = () => {
   return client;
 };
 
-let AdmissionCheck = (obj) => {
-  const Data = { ...obj };
-  console.log("Admssion Check working");
-  console.log(Data);
+let StudentSlipCheck = async (obj) => {
+  let database = res.db("SalesDept").collection("StudentSlip");
+  let result = await database
+    .find({ Student_ID: obj.Student_ID })
+    .toArray((err, res) => {
+      if (err) throw err;
+      return res;
+    });
+  return result;
+};
+
+let AdmissionCheck = async (obj) => {
+  let database = res.db("SalesDept").collection("AdmissionStudent");
+  let result = await database
+    .find({ Student_ID: obj.Student_ID })
+    .toArray((err, res) => {
+      if (err) throw err;
+      return res;
+    });
+  return result;
 };
 
 let LoginFunc = async (obj) => {
@@ -210,7 +226,35 @@ Server.post("/AdmissionCheck", async (req, resp) => {
       return res;
     }
   );
-  resp.json(data);
+  resp.json(result);
+});
+
+Server.post("/StudentSlipCheck", async (req, resp) => {
+  let data = req.body;
+  let result = await Promise.resolve(StudentSlipCheck({ ...data })).then(
+    (res) => {
+      return res;
+    }
+  );
+  resp.json(result);
+});
+
+Server.post("/StudentSlipCheck", async (req, resp) => {
+  let data = req.body;
+  let result = await Promise.resolve(StudentSlipCheck({ ...data })).then(
+    (res) => {
+      return res;
+    }
+  );
+  resp.json(result);
+});
+
+Server.post("/Login", async (req, resp) => {
+  let data = req.body;
+  let result = await Promise.resolve(LoginFunc({ ...data })).then((res) => {
+    return res;
+  });
+  resp.json(result);
 });
 
 Server.get("/server", (req, resp) => {
