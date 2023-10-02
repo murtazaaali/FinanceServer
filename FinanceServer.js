@@ -15,6 +15,12 @@ let ConnetionFunc = () => {
   return client;
 };
 
+let AdmissionCheck = (obj) => {
+  const Data = { ...obj };
+  console.log("Admssion Check working");
+  console.log(Data);
+};
+
 let LoginFunc = async (obj) => {
   let client = ConnetionFunc();
   let res = await client.connect();
@@ -189,12 +195,22 @@ Server.post("/GETExpensesData", async (req, resp) => {
   resp.json(result);
 });
 
-Server.post("/Login", async (req, resp) => {
-  let data = req.body;
-  let result = await Promise.resolve(LoginFunc({ ...data })).then((res) => {
+Server.post("/GETExpensesData", async (req, resp) => {
+  let obj = { recieved: "true", ...req.body };
+  let result = await Promise.resolve(GETExpensesData(obj)).then((res) => {
     return res;
   });
   resp.json(result);
+});
+
+Server.post("/AdmissionCheck", async (req, resp) => {
+  let data = req.body;
+  let result = await Promise.resolve(AdmissionCheck({ ...data })).then(
+    (res) => {
+      return res;
+    }
+  );
+  resp.json(data);
 });
 
 Server.get("/server", (req, resp) => {
