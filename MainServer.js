@@ -15,28 +15,6 @@ let ConnetionFunc = () => {
   return client;
 };
 
-let StudentSlipCheck = async (obj) => {
-  let database = res.db("SalesDept").collection("StudentSlip");
-  let result = await database
-    .find({ Student_ID: obj.Student_ID })
-    .toArray((err, res) => {
-      if (err) throw err;
-      return res;
-    });
-  return result;
-};
-
-let AdmissionCheck = async (obj) => {
-  let database = res.db("SalesDept").collection("AdmissionStudent");
-  let result = await database
-    .find({ Student_ID: obj.Student_ID })
-    .toArray((err, res) => {
-      if (err) throw err;
-      return res;
-    });
-  return result;
-};
-
 let LoginFunc = async (obj) => {
   let client = ConnetionFunc();
   let res = await client.connect();
@@ -48,6 +26,32 @@ let LoginFunc = async (obj) => {
       return res;
     });
 
+  return result;
+};
+
+let StudentSlipCheck = async (obj) => {
+  let client = ConnetionFunc();
+  let res = await client.connect();
+  let database = res.db("SalesDept").collection("StudentSlip");
+  let result = await database
+    .find({ Student_ID: obj.Student_ID })
+    .toArray((err, res) => {
+      if (err) throw err;
+      return res;
+    });
+  return result;
+};
+
+let AdmissionCheck = async (obj) => {
+  let client = ConnetionFunc();
+  let res = await client.connect();
+  let database = res.db("SalesDept").collection("AdmissionStudent");
+  let result = await database
+    .find({ Student_ID: obj.Student_ID })
+    .toArray((err, res) => {
+      if (err) throw err;
+      return res;
+    });
   return result;
 };
 
@@ -239,19 +243,62 @@ Server.post("/StudentSlipCheck", async (req, resp) => {
   resp.json(result);
 });
 
-Server.post("/StudentSlipCheck", async (req, resp) => {
-  let data = req.body;
-  let result = await Promise.resolve(StudentSlipCheck({ ...data })).then(
-    (res) => {
-      return res;
-    }
-  );
-  resp.json(result);
-});
-
 Server.post("/Login", async (req, resp) => {
   let data = req.body;
   let result = await Promise.resolve(LoginFunc({ ...data })).then((res) => {
+    return res;
+  });
+  resp.json(result);
+});
+
+//AcademyLogin
+
+let LoginFunction = async (obj) => {
+  let module = obj.module;
+  let data = obj.OBJ;
+
+  let client = ConnetionFunc();
+  let res = await client.connect();
+
+  let databaseCollection;
+
+  switch (module) {
+    case "finance":
+      databaseCollection = res
+        .db("SalesDept")
+        .collection("RegisterdSalesPersons");
+      break;
+    case "student":
+      databaseCollection = res.db("StudentDB").collection("RegisterdStudents");
+      break;
+    case "teacher":
+      databaseCollection = res.db("TeachersDB").collection("RegisterdTeachers");
+      break;
+    case "admin":
+      databaseCollection = res.db("AdminDB").collection("RegisterdAdmin");
+      break;
+    case "recovery":
+      databaseCollection = res
+        .db("RecoveryDB")
+        .collection("RegisterdRecoverPersons");
+      break;
+    default:
+      console.log("case not found");
+  }
+
+  let result = await databaseCollection
+    .find({ username: data.username, password: data.password })
+    .toArray((err, res) => {
+      if (err) throw err;
+      return res;
+    });
+
+  return result;
+};
+
+Server.post("/AcademyLogin", async (req, resp) => {
+  let data = { ...req.body, mes: "recieved" };
+  let result = await Promise.resolve(LoginFunction({ ...data })).then((res) => {
     return res;
   });
   resp.json(result);
