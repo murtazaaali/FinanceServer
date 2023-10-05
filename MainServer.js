@@ -3,6 +3,10 @@ const bodyParser = require("body-parser");
 const cors = require("cors");
 const { MongoClient } = require("mongodb");
 
+// Require Admin Functions
+
+const { GetAdmissionUserList, CreateUser } = require("./AdminFunc");
+
 const Server = express();
 
 Server.use(cors());
@@ -277,6 +281,9 @@ let LoginFunction = async (obj) => {
     case "admin":
       databaseCollection = res.db("AdminDB").collection("RegisterdAdmin");
       break;
+    case "hr":
+      databaseCollection = res.db("HRDB").collection("RegisterdHRPersons");
+      break;
     case "recovery":
       databaseCollection = res
         .db("RecoveryDB")
@@ -304,6 +311,37 @@ Server.post("/AcademyLogin", async (req, resp) => {
   resp.json(result);
 });
 
+//Admin Function
+
+Server.get("/GetAdmissionUserList", async (req, resp) => {
+  let result = await Promise.resolve(GetAdmissionUserList(ConnetionFunc)).then(
+    (res) => {
+      return res;
+    }
+  );
+  resp.json(result);
+});
+
+Server.post("/GetAdmissionUserList", async (req, resp) => {
+  let UserType = req.body.UserType;
+  let result = await Promise.resolve(
+    GetAdmissionUserList(ConnetionFunc, UserType)
+  ).then((res) => {
+    return res;
+  });
+  resp.json(result);
+});
+
+Server.post("/createUser", async (req, resp) => {
+  let result = await Promise.resolve(
+    CreateUser(ConnetionFunc, { ...req.body })
+  ).then((res) => {
+    return res;
+  });
+  // let sendMes = { mes: "server connected" };
+  resp.json(result);
+});
+
 Server.get("/server", (req, resp) => {
   resp.send("server connected success");
 });
@@ -311,3 +349,5 @@ Server.get("/server", (req, resp) => {
 Server.listen(process.env.PORT || 8080, () => {
   console.log("Started");
 });
+
+module.exports = { ConnetionFunc };
