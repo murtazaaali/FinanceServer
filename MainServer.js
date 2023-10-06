@@ -5,7 +5,15 @@ const { MongoClient } = require("mongodb");
 
 // Require Admin Functions
 
-const { GetAdmissionUserList, CreateUser } = require("./AdminFunc");
+const {
+  GetAdmissionUserList,
+  CreateUser,
+  GetCreatedUsersList,
+  UpdateCreatedUsers,
+  GetUserConact,
+} = require("./AdminFunc");
+
+const { GETSoftwareHouseRecord } = require("./HRFunc");
 
 const Server = express();
 
@@ -313,15 +321,6 @@ Server.post("/AcademyLogin", async (req, resp) => {
 
 //Admin Function
 
-Server.get("/GetAdmissionUserList", async (req, resp) => {
-  let result = await Promise.resolve(GetAdmissionUserList(ConnetionFunc)).then(
-    (res) => {
-      return res;
-    }
-  );
-  resp.json(result);
-});
-
 Server.post("/GetAdmissionUserList", async (req, resp) => {
   let UserType = req.body.UserType;
   let result = await Promise.resolve(
@@ -338,7 +337,49 @@ Server.post("/createUser", async (req, resp) => {
   ).then((res) => {
     return res;
   });
-  // let sendMes = { mes: "server connected" };
+  resp.json(result);
+});
+
+Server.post("/GetCreatedUsersList", async (req, resp) => {
+  let UserType = req.body.UserType;
+  let result = await Promise.resolve(
+    GetCreatedUsersList(ConnetionFunc, UserType)
+  ).then((res) => {
+    return res;
+  });
+  resp.json(result);
+});
+
+Server.post("/UpdateCreatedUsers", async (req, resp) => {
+  let UserType = req.body.UserType;
+  let Username = req.body.Username;
+  let Status = req.body.Status;
+
+  let result = await Promise.resolve(
+    UpdateCreatedUsers(ConnetionFunc, UserType, Username, Status)
+  ).then((res) => {
+    return res;
+  });
+  resp.json(result);
+});
+
+Server.get("/GetUserConact", async (req, resp) => {
+  let result = await Promise.resolve(GetUserConact(ConnetionFunc)).then(
+    (res) => {
+      return res;
+    }
+  );
+  console.log(result);
+  resp.json(result);
+});
+//HR Functions
+
+Server.get("/GETSoftwareHouseRecord", async (req, resp) => {
+  let result = await Promise.resolve(
+    GETSoftwareHouseRecord(ConnetionFunc)
+  ).then((res) => {
+    return res;
+  });
   resp.json(result);
 });
 
