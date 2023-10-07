@@ -11,6 +11,10 @@ const {
   GetCreatedUsersList,
   UpdateCreatedUsers,
   GetUserConact,
+  RegisterCourse,
+  GetCourses,
+  AssignTeacher,
+  EnrolledStudent,
 } = require("./AdminFunc");
 
 const { GETSoftwareHouseRecord } = require("./HRFunc");
@@ -372,6 +376,41 @@ Server.get("/GetUserConact", async (req, resp) => {
   console.log(result);
   resp.json(result);
 });
+
+Server.post("/RegisterCourse", async (req, resp) => {
+  let result = await Promise.resolve(
+    RegisterCourse(ConnetionFunc, { ...req.body })
+  ).then((res) => {
+    return res;
+  });
+  resp.json(result);
+});
+
+Server.post("/AssignTeacher", async (req, resp) => {
+  let result = await Promise.resolve(
+    AssignTeacher(ConnetionFunc, { ...req.body })
+  ).then((res) => {
+    return res;
+  });
+  resp.json(result);
+});
+
+Server.post("/EnrolledStudent", async (req, resp) => {
+  let result = await Promise.resolve(
+    EnrolledStudent(ConnetionFunc, { ...req.body })
+  ).then((res) => {
+    return res;
+  });
+  resp.json(result);
+});
+
+Server.get("/GetCourses", async (req, resp) => {
+  let result = await Promise.resolve(GetCourses(ConnetionFunc)).then((res) => {
+    return res;
+  });
+  resp.json(result);
+});
+
 //HR Functions
 
 Server.get("/GETSoftwareHouseRecord", async (req, resp) => {

@@ -30,7 +30,7 @@ let GetAdmissionUserList = async (connection, UserType) => {
   }
   let result = await database.aggregate(field).toArray(async (err, res) => {
     if (err) throw err;
-    console.log(res);
+    // console.log(res);
     return res;
   });
   return result;
@@ -80,7 +80,7 @@ let GetCreatedUsersList = async (connection, UserType) => {
   }
   let result = await database.aggregate(field).toArray(async (err, res) => {
     if (err) throw err;
-    console.log(res);
+    // console.log(res);
     return res;
   });
   return result;
@@ -130,10 +130,85 @@ let GetUserConact = async (connection) => {
 
   let result = await database.aggregate(field).toArray(async (err, res) => {
     if (err) throw err;
-    console.log(res);
+    // console.log(res);
     return res;
   });
   return result;
+};
+
+let RegisterCourse = async (connection, obj) => {
+  let client = connection();
+  let res = await client.connect();
+  let database = await res.db("AdminDB").collection("RegisterdCourses");
+
+  let existingUser = await database.findOne({ CourseID: obj.CourseID });
+  if (existingUser) {
+    return { message: "Username is already registered." };
+  } else {
+    try {
+      const result = await database.insertOne(obj);
+      return { message: "Course Registerd Successfuly." };
+    } catch (err) {
+      return { message: "Error ..." };
+    }
+  }
+};
+
+let AssignTeacher = async (connection, obj) => {
+  let client = connection();
+  let res = await client.connect();
+  let database = await res.db("AdminDB").collection("RegisterdCourses");
+  let result = await database.updateOne(
+    { CourseID: obj.SelectedCourse },
+    { $set: { Teacher: obj.SelectedTeacher } }
+  );
+  return { message: "Teacher Successfuly Assigned course." };
+};
+
+let GetCourses = async (connection) => {
+  let client = connection();
+  let res = await client.connect();
+  let database = res.db("AdminDB").collection("RegisterdCourses");
+  let field = [
+    {
+      $project: {
+        CourseName: 1,
+        CourseID: 1,
+        _id: 0,
+      },
+    },
+  ];
+  let result = await database.aggregate(field).toArray((err, res) => {
+    if (err) throw err;
+    return res;
+  });
+  return result;
+};
+
+let EnrolledStudent = async (connection, obj) => {
+  let client = await connection();
+  let res = await client.connect();
+  // console.log(obj);
+  let database = await res.db("AdminDB").collection("RegisterdCourses");
+  const existingStudent = await database.findOne({
+    studentID: obj.SelectedStudent,
+  });
+  if (existingStudent) {
+    return { message: "Student Already Enrolled" };
+  } else {
+    await database.updateOne(
+      { CourseID: obj.SelectedCourse },
+      {
+        $push: {
+          Students: {
+            studentName: obj.StudentName,
+            studentID: obj.SelectedStudent,
+          },
+        },
+      }
+    );
+    return { message: "Student Enrolled Success" };
+  }
 };
 
 module.exports = {
@@ -142,4 +217,8 @@ module.exports = {
   GetCreatedUsersList,
   UpdateCreatedUsers,
   GetUserConact,
+  RegisterCourse,
+  GetCourses,
+  AssignTeacher,
+  EnrolledStudent,
 };
