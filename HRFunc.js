@@ -20,4 +20,25 @@ let GETSoftwareHouseRecord = async (ConnetionFunc) => {
   return result;
 };
 
-module.exports = { GETSoftwareHouseRecord };
+let RegisterContract = async (connection, obj) => {
+  let client = connection();
+  let res = await client.connect();
+  let database = await res.db("HRDB").collection("SoftwareHousesRecord");
+
+  let existingUser = await database.findOne({
+    Name: obj.Name,
+    StartDate: obj.StartDate,
+  });
+  if (existingUser) {
+    return { message: "Contract is already registered." };
+  } else {
+    try {
+      const result = await database.insertOne(obj);
+      return { message: "Contract Registerd Successfuly." };
+    } catch (err) {
+      return { message: "Error ..." };
+    }
+  }
+};
+
+module.exports = { GETSoftwareHouseRecord, RegisterContract };

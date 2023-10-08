@@ -17,7 +17,7 @@ const {
   EnrolledStudent,
 } = require("./AdminFunc");
 
-const { GETSoftwareHouseRecord } = require("./HRFunc");
+const { GETSoftwareHouseRecord, RegisterContract } = require("./HRFunc");
 
 const Server = express();
 
@@ -416,6 +416,15 @@ Server.get("/GetCourses", async (req, resp) => {
 Server.get("/GETSoftwareHouseRecord", async (req, resp) => {
   let result = await Promise.resolve(
     GETSoftwareHouseRecord(ConnetionFunc)
+  ).then((res) => {
+    return res;
+  });
+  resp.json(result);
+});
+
+Server.post("/RegisterContract", async (req, resp) => {
+  let result = await Promise.resolve(
+    RegisterContract(ConnetionFunc, { ...req.body })
   ).then((res) => {
     return res;
   });
