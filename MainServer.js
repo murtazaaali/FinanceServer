@@ -15,9 +15,28 @@ const {
   GetCourses,
   AssignTeacher,
   EnrolledStudent,
+  AddProgram,
+  GETProgramList,
 } = require("./AdminFunc");
 
-const { GETSoftwareHouseRecord, RegisterContract } = require("./HRFunc");
+const {
+  GETSoftwareHouseRecord,
+  RegisterContract,
+  RegisterContactInfo,
+} = require("./HRFunc");
+
+const {
+  GETTeacherClass,
+  GETCourseStudents,
+  AddAttandance,
+  AddMarks,
+} = require("./TeacherFunc");
+
+const {
+  GETStudentClass,
+  GETStudentAttandance,
+  GETStudentMarks,
+} = require("./StudentFunc");
 
 const Server = express();
 
@@ -101,7 +120,7 @@ let GetQuery = async () => {
   let database = res.db("SalesDept").collection("RegisterQuery");
   let result = await database.find({}).toArray(async (err, res) => {
     if (err) throw err;
-    console.log(res);
+    // console.log(res);
     return res;
   });
   return result;
@@ -373,7 +392,7 @@ Server.get("/GetUserConact", async (req, resp) => {
       return res;
     }
   );
-  console.log(result);
+  // console.log(result);
   resp.json(result);
 });
 
@@ -389,6 +408,15 @@ Server.post("/RegisterCourse", async (req, resp) => {
 Server.post("/AssignTeacher", async (req, resp) => {
   let result = await Promise.resolve(
     AssignTeacher(ConnetionFunc, { ...req.body })
+  ).then((res) => {
+    return res;
+  });
+  resp.json(result);
+});
+
+Server.post("/AddProgram", async (req, resp) => {
+  let result = await Promise.resolve(
+    AddProgram(ConnetionFunc, { ...req.body })
   ).then((res) => {
     return res;
   });
@@ -422,12 +450,100 @@ Server.get("/GETSoftwareHouseRecord", async (req, resp) => {
   resp.json(result);
 });
 
+Server.get("/GETProgramList", async (req, resp) => {
+  let result = await Promise.resolve(GETProgramList(ConnetionFunc)).then(
+    (res) => {
+      return res;
+    }
+  );
+  resp.json(result);
+});
+
 Server.post("/RegisterContract", async (req, resp) => {
   let result = await Promise.resolve(
     RegisterContract(ConnetionFunc, { ...req.body })
   ).then((res) => {
     return res;
   });
+  resp.json(result);
+});
+
+Server.post("/RegisterContactInfo", async (req, resp) => {
+  let result = await Promise.resolve(
+    RegisterContactInfo(ConnetionFunc, { ...req.body })
+  ).then((res) => {
+    return res;
+  });
+  resp.json(result);
+});
+
+//Teachers Func
+Server.post("/GETTeacherClasses", async (req, resp) => {
+  let result = await Promise.resolve(
+    GETTeacherClass(ConnetionFunc, { ...req.body })
+  ).then((res) => {
+    return res;
+  });
+  resp.json(result);
+});
+
+Server.post("/GETCourseStudents", async (req, resp) => {
+  let result = await Promise.resolve(
+    GETCourseStudents(ConnetionFunc, { ...req.body })
+  ).then((res) => {
+    return res;
+  });
+  resp.json(result);
+});
+
+Server.post("/AddAttandance", async (req, resp) => {
+  let result = await Promise.resolve(
+    AddAttandance(ConnetionFunc, { ...req.body })
+  ).then((res) => {
+    return res;
+  });
+  // console.log(result);
+  resp.json(result);
+});
+
+Server.post("/AddMarks", async (req, resp) => {
+  let result = await Promise.resolve(
+    AddMarks(ConnetionFunc, { ...req.body })
+  ).then((res) => {
+    return res;
+  });
+  // console.log(result);
+  resp.json(result);
+});
+
+// Student Functions
+Server.post("/GETStudentClass", async (req, resp) => {
+  let result = await Promise.resolve(
+    GETStudentClass(ConnetionFunc, { ...req.body })
+  ).then((res) => {
+    return res;
+  });
+  // console.log(result);
+  resp.json(result);
+});
+
+Server.post("/GETStudentAttandance", async (req, resp) => {
+  let result = await Promise.resolve(
+    GETStudentAttandance(ConnetionFunc, { ...req.body })
+  ).then((res) => {
+    return res;
+  });
+  // console.log(result);
+  resp.json(result);
+});
+
+Server.post("/GETStudentMarks", async (req, resp) => {
+  let result = await Promise.resolve(
+    GETStudentMarks(ConnetionFunc, { ...req.body })
+  ).then((res) => {
+    return res;
+  });
+  // console.log(result);
   resp.json(result);
 });
 

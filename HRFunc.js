@@ -14,7 +14,7 @@ let GETSoftwareHouseRecord = async (ConnetionFunc) => {
   let database = res.db("HRDB").collection("SoftwareHousesRecord");
   let result = await database.aggregate(field).toArray(async (err, res) => {
     if (err) throw err;
-    console.log(res);
+    // console.log(res);
     return res;
   });
   return result;
@@ -41,4 +41,29 @@ let RegisterContract = async (connection, obj) => {
   }
 };
 
-module.exports = { GETSoftwareHouseRecord, RegisterContract };
+let RegisterContactInfo = async (connection, obj) => {
+  let client = connection();
+  let res = await client.connect();
+  let database = await res.db("HRDB").collection("TeacherContact");
+
+  let existingUser = await database.findOne({
+    Name: obj.Name,
+    Contact: obj.Contact,
+  });
+  if (existingUser) {
+    return { message: "Contact is already registered." };
+  } else {
+    try {
+      const result = await database.insertOne(obj);
+      return { message: "Contact Registerd Successfuly." };
+    } catch (err) {
+      return { message: "Error ..." };
+    }
+  }
+};
+
+module.exports = {
+  GETSoftwareHouseRecord,
+  RegisterContract,
+  RegisterContactInfo,
+};

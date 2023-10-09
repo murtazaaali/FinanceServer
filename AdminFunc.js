@@ -113,16 +113,14 @@ let GetUserConact = async (connection) => {
   let database;
   let field;
 
-  database = await res.db("HRDB").collection("RegisterTeacher");
+  database = await res.db("HRDB").collection("TeacherContact");
   field = [
     {
       $project: {
-        TeachCourse: 1,
-        TeacherName: 1,
+        Name: 1,
         Email: 1,
         Designation: 1,
         Contact: 1,
-        Teacher_ID: 1,
         _id: 0,
       },
     },
@@ -143,11 +141,34 @@ let RegisterCourse = async (connection, obj) => {
 
   let existingUser = await database.findOne({ CourseID: obj.CourseID });
   if (existingUser) {
-    return { message: "Username is already registered." };
+    return { message: "Course is already registered." };
   } else {
     try {
       const result = await database.insertOne(obj);
       return { message: "Course Registerd Successfuly." };
+    } catch (err) {
+      return { message: "Error ..." };
+    }
+  }
+};
+
+let AddProgram = async (connection, obj) => {
+  let client = connection();
+  let res = await client.connect();
+  let database = await res.db("AdminDB").collection("RegisteredPrograms");
+  // let result = await database.updateOne(
+  //   { CourseID: obj.SelectedCourse },
+  //   { $set: { Teacher: obj.SelectedTeacher } }
+  // );
+  let existingUser = await database.findOne({
+    ProgramName: obj.ProgramName,
+  });
+  if (existingUser) {
+    return { message: "Program is already Assigned." };
+  } else {
+    try {
+      const result = await database.insertOne(obj);
+      return { message: "Program Registerd Successfuly." };
     } catch (err) {
       return { message: "Error ..." };
     }
@@ -162,7 +183,20 @@ let AssignTeacher = async (connection, obj) => {
     { CourseID: obj.SelectedCourse },
     { $set: { Teacher: obj.SelectedTeacher } }
   );
-  return { message: "Teacher Successfuly Assigned course." };
+  let existingUser = await database.findOne({
+    CourseID: obj.CourseID,
+    Teacher: obj.SelectedTeacher,
+  });
+  if (existingUser) {
+    return { message: "Course is already Assigned." };
+  } else {
+    try {
+      const result = await database.insertOne(obj);
+      return { message: "Teacher Assigned Successfuly." };
+    } catch (err) {
+      return { message: "Error ..." };
+    }
+  }
 };
 
 let GetCourses = async (connection) => {
@@ -211,6 +245,28 @@ let EnrolledStudent = async (connection, obj) => {
   }
 };
 
+let GETProgramList = async (connection, UserType) => {
+  let client = connection();
+  let res = await client.connect();
+  let database;
+  let field = [
+    {
+      $project: {
+        ProgramName: 1,
+        _id: 0,
+      },
+    },
+  ];
+  database = await res.db("AdminDB").collection("RegisteredPrograms");
+
+  let result = await database.aggregate(field).toArray(async (err, res) => {
+    if (err) throw err;
+    // console.log(res);
+    return res;
+  });
+  return result;
+};
+
 module.exports = {
   GetAdmissionUserList,
   CreateUser,
@@ -221,4 +277,6 @@ module.exports = {
   GetCourses,
   AssignTeacher,
   EnrolledStudent,
+  AddProgram,
+  GETProgramList,
 };
