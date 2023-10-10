@@ -48,10 +48,22 @@ const {
 const Server = express();
 
 // Server.use(cors());
-Server.use(
+// Server.use(
+//   cors({
+//     origin: "http://localhost:3000",
+//     methods: "GET,HEAD,PUT,PATCH,POST,DELETE",
+//   })
+// );
+const allowedOrigins = "http://localhost:3000";
+app.use(
   cors({
-    origin: "https://bvl-academy-9fb641fe439b.herokuapp.com",
-    methods: "GET,HEAD,PUT,PATCH,POST,DELETE",
+    origin: (origin, callback) => {
+      if (allowedOrigins.includes(origin)) {
+        callback(null, true);
+      } else {
+        callback(new Error("Not allowed by CORS"));
+      }
+    },
   })
 );
 
