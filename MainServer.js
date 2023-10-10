@@ -55,7 +55,7 @@ const Server = express();
 //   })
 // );
 const allowedOrigins = "http://localhost:3000";
-app.use(
+Server.use(
   cors({
     origin: (origin, callback) => {
       if (allowedOrigins.includes(origin)) {
