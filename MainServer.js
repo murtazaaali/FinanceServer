@@ -1,3 +1,10 @@
+require("dotenv").config();
+
+if (process.env.NODE_ENV !== "production") {
+  require("dotenv").config();
+}
+const PORT = process.env.PORT || 8080;
+
 const express = require("express");
 const bodyParser = require("body-parser");
 const cors = require("cors");
@@ -50,19 +57,19 @@ let ConnetionFunc = () => {
   return client;
 };
 
-let LoginFunc = async (obj) => {
-  let client = ConnetionFunc();
-  let res = await client.connect();
-  let database = res.db("SalesDept").collection("RegisterdSalesPersons");
-  let result = await database
-    .find({ username: obj.username, password: obj.password })
-    .toArray((err, res) => {
-      if (err) throw err;
-      return res;
-    });
+// let LoginFunc = async (obj) => {
+//   let client = ConnetionFunc();
+//   let res = await client.connect();
+//   let database = res.db("SalesDept").collection("RegisterdSalesPersons");
+//   let result = await database
+//     .find({ username: obj.username, password: obj.password })
+//     .toArray((err, res) => {
+//       if (err) throw err;
+//       return res;
+//     });
 
-  return result;
-};
+//   return result;
+// };
 
 let StudentSlipCheck = async (obj) => {
   let client = ConnetionFunc();
@@ -278,13 +285,13 @@ Server.post("/StudentSlipCheck", async (req, resp) => {
   resp.json(result);
 });
 
-Server.post("/Login", async (req, resp) => {
-  let data = req.body;
-  let result = await Promise.resolve(LoginFunc({ ...data })).then((res) => {
-    return res;
-  });
-  resp.json(result);
-});
+// Server.post("/Login", async (req, resp) => {
+//   let data = req.body;
+//   let result = await Promise.resolve(LoginFunc({ ...data })).then((res) => {
+//     return res;
+//   });
+//   resp.json(result);
+// });
 
 //AcademyLogin
 
@@ -551,8 +558,12 @@ Server.get("/server", (req, resp) => {
   resp.send("server connected success");
 });
 
-Server.listen(process.env.PORT || 8080, () => {
-  console.log("Started");
+// Server.listen(process.env.PORT || 8080, () => {
+//   console.log("Started");
+// });
+
+Server.listen(PORT, () => {
+  console.log(`Server is running on port ${PORT}`);
 });
 
 module.exports = { ConnetionFunc };
