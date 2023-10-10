@@ -47,7 +47,14 @@ const {
 
 const Server = express();
 
-Server.use(cors());
+// Server.use(cors());
+Server.use(
+  cors({
+    origin: "https://bvl-academy-9fb641fe439b.herokuapp.com",
+    methods: "GET,HEAD,PUT,PATCH,POST,DELETE",
+  })
+);
+
 Server.use(bodyParser.json());
 
 let ConnetionFunc = () => {
