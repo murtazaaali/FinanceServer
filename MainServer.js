@@ -57,7 +57,8 @@ const Server = express();
 
 // const allowedOrigins = "http://localhost:3000";
 const allowedOrigins = [
-  "https://lms-portal-three.vercel.app",
+  // "https://lms-portal-three.vercel.app",
+  "https://lms-portal-acd.vercel.app",
   "http://localhost:3000",
 ];
 Server.use(
