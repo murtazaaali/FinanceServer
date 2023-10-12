@@ -48,29 +48,29 @@ const {
 const Server = express();
 
 // Server.use(cors());
-Server.use(
-  cors({
-    origin: ["http://localhost:3000", "https://lms-portal-three.vercel.app"],
-    methods: "GET,HEAD,PUT,PATCH,POST,DELETE",
-  })
-);
-
-// const allowedOrigins = "http://localhost:3000";
-// const allowedOrigins = [
-//   "https://lms-portal-three.vercel.app",
-//   "http://localhost:3000",
-// ];
 // Server.use(
 //   cors({
-//     origin: (origin, callback) => {
-//       if (allowedOrigins.includes(origin)) {
-//         callback(null, true);
-//       } else {
-//         callback(new Error("Not allowed by CORS"));
-//       }
-//     },
+//     origin: ["http://localhost:3000", "https://lms-portal-three.vercel.app"],
+//     methods: "GET,HEAD,PUT,PATCH,POST,DELETE",
 //   })
 // );
+
+// const allowedOrigins = "http://localhost:3000";
+const allowedOrigins = [
+  "https://lms-portal-three.vercel.app",
+  "http://localhost:3000",
+];
+Server.use(
+  cors({
+    origin: (origin, callback) => {
+      if (allowedOrigins.includes(origin)) {
+        callback(null, true);
+      } else {
+        callback(new Error("Not allowed by CORS"));
+      }
+    },
+  })
+);
 
 Server.use(bodyParser.json());
 
