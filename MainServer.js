@@ -56,7 +56,8 @@ const Server = express();
 // );
 
 const allowedOrigins =
-  "https://bvl-academy-9tq1rkxeg-ali-murtazas-projects.vercel.app";
+  // "https://bvl-academy-9tq1rkxeg-ali-murtazas-projects.vercel.app";
+  "https://lms-portal-three.vercel.app";
 // const allowedOrigins = [
 //   "https://bvl-academy-1ik1jzgnn-ali-murtazas-projects.vercel.app",
 //   "http://localhost:3000",
