@@ -50,7 +50,7 @@ const Server = express();
 // Server.use(cors());
 Server.use(
   cors({
-    origin: "http://localhost:3000",
+    origin: ["http://localhost:3000", "https://lms-portal-three.vercel.app"],
     methods: "GET,HEAD,PUT,PATCH,POST,DELETE",
   })
 );
