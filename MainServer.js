@@ -55,12 +55,11 @@ const Server = express();
 //   })
 // );
 
-// const allowedOrigins =
-//   "https://lms-portal-three.vercel.app";
-const allowedOrigins = [
-  "https://lms-portal-three.vercel.app",
-  "http://localhost:3000",
-];
+const allowedOrigins = "http://localhost:3000";
+// const allowedOrigins = [
+//   "https://lms-portal-three.vercel.app",
+//   "http://localhost:3000",
+// ];
 Server.use(
   cors({
     origin: (origin, callback) => {
