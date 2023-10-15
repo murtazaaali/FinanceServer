@@ -10,5 +10,6 @@
   },
   "scripts": {
     "start": "nodemon FinanceServer.js"
-  }
+  },
+  "proxy": "http://localhost:8080"
 }
