@@ -50,7 +50,7 @@ const Server = express();
 // Server.use(cors());
 Server.use(
   cors({
-    origin: "*",
+    origin: ["https://bvl-academy.vercel.app", "http://localhost:3000"],
     methods: "GET,HEAD,PUT,PATCH,POST,DELETE",
   })
 );
