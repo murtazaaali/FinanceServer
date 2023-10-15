@@ -208,6 +208,7 @@ let GetCourses = async (connection) => {
       $project: {
         CourseName: 1,
         CourseID: 1,
+        Teacher: 1,
         _id: 0,
       },
     },

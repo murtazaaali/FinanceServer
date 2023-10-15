@@ -48,30 +48,30 @@ const {
 const Server = express();
 
 // Server.use(cors());
-// Server.use(
-//   cors({
-//     origin: ["http://localhost:3000", "https://lms-portal-three.vercel.app"],
-//     methods: "GET,HEAD,PUT,PATCH,POST,DELETE",
-//   })
-// );
-
-// const allowedOrigins = "http://localhost:3000";
-const allowedOrigins = [
-  // "https://lms-portal-three.vercel.app",
-  "https://lms-portal-acd.vercel.app",
-  "http://localhost:3000",
-];
 Server.use(
   cors({
-    origin: (origin, callback) => {
-      if (allowedOrigins.includes(origin)) {
-        callback(null, true);
-      } else {
-        callback(new Error("Not allowed by CORS"));
-      }
-    },
+    origin: "http://localhost:3000",
+    methods: "GET,HEAD,PUT,PATCH,POST,DELETE",
   })
 );
+
+// const allowedOrigins = "http://localhost:3000";
+// const allowedOrigins = [
+// "https://lms-portal-three.vercel.app",
+//   "https://lms-portal-acd.vercel.app",
+//   "http://localhost:3000",
+// ];
+// Server.use(
+//   cors({
+//     origin: (origin, callback) => {
+//       if (allowedOrigins.includes(origin)) {
+//         callback(null, true);
+//       } else {
+//         callback(new Error("Not allowed by CORS"));
+//       }
+//     },
+//   })
+// );
 
 Server.use(bodyParser.json());
 
@@ -123,6 +123,7 @@ let AdmissionCheck = async (obj) => {
 };
 
 let RegisterQuery = async (obj) => {
+  console.log("Func Runs ");
   let client = ConnetionFunc();
   let res = await client.connect();
   let database = res.db("SalesDept").collection("RegisterQuery");
@@ -132,6 +133,28 @@ let RegisterQuery = async (obj) => {
   });
 
   return result;
+};
+
+let UpdateRegisterQuery = async (obj) => {
+  console.log("Func Runs ");
+  let client = ConnetionFunc();
+  let res = await client.connect();
+  let database = res.db("SalesDept").collection("RegisterQuery");
+  const filter = { Student_ID: obj.StudentID };
+  const update = {
+    $set: {
+      Status1: obj.Status1,
+      Status2: obj.Status2,
+      Status3: obj.Status3,
+    },
+  };
+  database.updateOne(filter, update, (err) => {
+    if (err) {
+      console.error("Error updating document:", err);
+    } else {
+      console.log("Document updated successfully");
+    }
+  });
 };
 
 let AdmissionStudent = async (obj) => {
@@ -150,7 +173,14 @@ let GetQuery = async () => {
   let client = ConnetionFunc();
   let res = await client.connect();
   let database = res.db("SalesDept").collection("RegisterQuery");
-  let result = await database.find({}).toArray(async (err, res) => {
+  field = [
+    {
+      $project: {
+        _id: 0,
+      },
+    },
+  ];
+  let result = await database.aggregate(field).toArray(async (err, res) => {
     if (err) throw err;
     // console.log(res);
     return res;
@@ -175,8 +205,19 @@ let GETExpensesData = async (obj) => {
   // console.log(obj);
   let client = ConnetionFunc();
   let res = await client.connect();
-  let database = res.db("SalesDept").collection("RegisterdRecord");
-  let result = await database.find({ Type: obj.Type }).toArray((err, res) => {
+  let database = res.db("SalesDept").collection("RegisterdExpense");
+  let field = [
+    {
+      $project: {
+        _id: 0,
+        Name: 1,
+        Amount: 1,
+        Date: 1,
+        Type: 1,
+      },
+    },
+  ];
+  let result = await database.aggregate(field).toArray((err, res) => {
     if (err) throw err;
     return res;
   });
@@ -205,6 +246,17 @@ let AddRecord = async (obj) => {
   return result;
 };
 
+let AddExpense = async (obj) => {
+  let client = ConnetionFunc();
+  let res = await client.connect();
+  let database = res.db("SalesDept").collection("RegisterdExpense");
+  let result = await database.insertOne(obj, (err) => {
+    if (err) throw err;
+    return { mes: "Record inserted success" };
+  });
+  return result;
+};
+
 let GETSalesData = async () => {
   let client = ConnetionFunc();
   let res = await client.connect();
@@ -220,6 +272,13 @@ let GETSalesData = async () => {
 Server.post("/QueryRegister", async (req, resp) => {
   let data = { ...req.body };
   let result = await Promise.resolve(RegisterQuery(data)).then((res) => {
+    return res;
+  });
+  resp.json(result);
+});
+Server.post("/UpdateRegisterQuery", async (req, resp) => {
+  let data = { ...req.body };
+  let result = await Promise.resolve(UpdateRegisterQuery(data)).then((res) => {
     return res;
   });
   resp.json(result);
@@ -262,6 +321,14 @@ Server.post("/AddStudentSlip", async (req, resp) => {
 Server.post("/AddRecord", async (req, resp) => {
   let data = req.body;
   let result = await Promise.resolve(AddRecord({ ...data })).then((res) => {
+    return res;
+  });
+  resp.json(result);
+});
+
+Server.post("/AddExpense", async (req, resp) => {
+  let data = req.body;
+  let result = await Promise.resolve(AddExpense({ ...data })).then((res) => {
     return res;
   });
   resp.json(result);
@@ -352,6 +419,11 @@ let LoginFunction = async (obj) => {
         .db("RecoveryDB")
         .collection("RegisterdRecoverPersons");
       break;
+    case "queryhandler":
+      databaseCollection = res
+        .db("QueryHandlers")
+        .collection("RegisterdQueryHandlerPersons");
+      break;
     default:
       console.log("case not found");
   }
@@ -424,7 +496,6 @@ Server.get("/GetUserConact", async (req, resp) => {
       return res;
     }
   );
-  // console.log(result);
   resp.json(result);
 });
 

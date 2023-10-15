@@ -26,8 +26,9 @@ const GETCourseStudents = async (ConnetionFunc, obj) => {
   try {
     await client.connect();
     let database = client.db("AdminDB").collection("RegisterdCourses");
+    // Teacher: obj.TeacherID
     let result = await database
-      .find({ Teacher: obj.TeacherID, CourseID: obj.CourseID })
+      .find({ CourseID: obj.CourseID })
       .project({
         CourseName: 1,
         CourseID: 1,
